@@ -1,22 +1,24 @@
 import entities.Department;
 import entities.Employee;
-import entities.Event;
 import entities.Position;
 
-import javax.sound.midi.Soundbank;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Runner {
+
+    //Function -> R apply(T t);
+    //Predicate -> boolean test(T t);
+    //Consumer -> void accept(T t);
+    //Supplier -> T get();
 
     private static List<Employee> emps = Arrays.asList(
             new Employee("Michael", "Smith", 243, 43, Position.CHEF),
@@ -69,9 +71,12 @@ public class Runner {
 //        stream.toArray();
 //        stream.collect(Collectors.toMap(Employee::getId, Employee::getPosition));
 //        IntStream intStream = IntStream.of(100, 200, 300);
+//        System.out.println(intStream.reduce(Integer::sum).orElse(0));//600
+//        System.out.println(intStream.reduce(50, (left, right) -> left + right));//650
 //        System.out.println(intStream.reduce(((left, right) -> left + right)).orElse(0)); //600
 //        System.out.println(intStream.reduce(((left, right) -> left + right)).getAsInt()); //600
 //        System.out.println(intStream.reduce(((left, right) -> right - left)).getAsInt()); //200
+//        System.out.println(intStream.reduce((left, right) -> left - right).getAsInt());//-400
 //        System.out.println(deps.stream().reduce(new Runner()::reducer));
 
 //        System.out.println(IntStream.of(100, 200, 300).average().getAsDouble()); //200
@@ -87,6 +92,8 @@ public class Runner {
 //        System.out.println(emps.stream().noneMatch(employee -> employee.getAge() > 60)); //true
 //        System.out.println(emps.stream().allMatch(employee -> employee.getAge() > 18)); //true
 //        System.out.println(emps.stream().anyMatch(employee -> employee.getPosition() == Position.CHEF)); //true
+//        Stream.of("One", "Two", "Three", "Four").collect(Collectors.toCollection(LinkedList::new)).descendingIterator().forEachRemaining(System.out::print);//FourThreeTwoOne
+//        emps.stream().collect(Collectors.toCollection(ArrayList::new)).forEach(System.out::println);
     }
 
     public static void transform() {
@@ -111,9 +118,16 @@ public class Runner {
 //        IntStream.iterate(0, i -> i + 1).takeWhile(i -> i < 10).forEach(System.out::println); //1,2...9
 //    IntStream.iterate(0, i -> i < 10, i -> i++).forEach(System.out::println);
 
-//        Теперь стало возможным создавать Stream из null, тем самым, уходя от проверок на null и уменьшая вероятность NullPointerExceptio
+//        Теперь стало возможным создавать Stream из null, тем самым, уходя от проверок на null и уменьшая вероятность NullPointerException
 //        emps.stream().flatMap(e -> Stream.ofNullable(e.getPosition())).collect(Collectors.toList()).forEach(System.out::println);
 
 //        IntStream.of(1,3,3,4,5,1).distinct().forEach(System.out::println);
+    }
+
+    public static void flatMapExample() {
+        List<String> list = Arrays.asList("JavaExampleTest", "Some");
+        List<String[]> collectArrays = list.stream().map(s -> s.split("")).collect(Collectors.toList());
+        //with flatMap result will be -> List<String> but not List<String[]>
+        List<String> collectString = list.stream().map(s -> s.split("")).flatMap(Arrays::stream).collect(Collectors.toList());
     }
 }
