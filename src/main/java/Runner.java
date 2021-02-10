@@ -4,13 +4,7 @@ import entities.Position;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Runner {
@@ -129,5 +123,22 @@ public class Runner {
         List<String[]> collectArrays = list.stream().map(s -> s.split("")).collect(Collectors.toList());
         //with flatMap result will be -> List<String> but not List<String[]>
         List<String> collectString = list.stream().map(s -> s.split("")).flatMap(Arrays::stream).collect(Collectors.toList());
+    }
+
+    public static void flatMapExample2() {
+        List<Employee> empl1 = Arrays.asList(new Employee("Michael", "Smith", 243, 43, Position.CHEF));
+        List<Employee> empl2 = Arrays.asList(new Employee("Tim", "Fox", 123, 21, Position.MANAGER));
+
+        List<List<String>> res1 = Stream.of(empl1, empl2)
+                .map(x -> x.stream().map(Employee::getFirstName).collect(Collectors.toList()))
+                .collect(Collectors.toList());
+        System.out.println(res1);
+
+        List<String> res2 = Stream.of(empl1, empl2)
+                .flatMap(x -> x.stream().map(Employee::getFirstName))
+                .collect(Collectors.toList());
+        System.out.println(res2);
+//      [[Michael], [Tim]]
+//      [Michael, Tim]
     }
 }
